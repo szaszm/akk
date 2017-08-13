@@ -19,3 +19,45 @@ $container->setDefinition(
 );
 
 */
+
+$container->setDefinition(
+    'akk_model.repository.detail.repository_impl',
+    new Definition(
+        \AKK\ModelBundle\Repository\Detail\RepositoryImpl::class,
+        [
+            new Reference('database_connection')
+        ]
+    )
+);
+
+$container->setDefinition(
+    'akk_model.repository.pass_type',
+    new Definition(
+        \AKK\ModelBundle\Repository\PassTypeRepository::class,
+        [
+            new Reference('akk_model.repository.detail.repository_impl'),
+        ]
+    )
+);
+
+$container->setDefinition(
+    'akk_model.repository.user',
+    new Definition(
+        \AKK\ModelBundle\Repository\UserRepository::class,
+        [
+            new Reference('akk_model.repository.detail.repository_impl'),
+        ]
+    )
+);
+
+$container->setDefinition(
+    'akk_model.repository.pass',
+    new Definition(
+        \AKK\ModelBundle\Repository\PassRepository::class,
+        [
+            new Reference('akk_model.repository.detail.repository_impl'),
+            new Reference('akk_model.repository.pass_type'),
+            new Reference('akk_model.repository.user')
+        ]
+    )
+);

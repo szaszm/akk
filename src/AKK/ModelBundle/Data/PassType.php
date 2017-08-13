@@ -23,6 +23,6 @@ class PassType
     /** @var  int|null */
     public $priceHuf;
 
-    /** @var  \DateInterval|null */
-    public $validity;
+    /** @var  int|null */
+    public $validitySeconds;
 }

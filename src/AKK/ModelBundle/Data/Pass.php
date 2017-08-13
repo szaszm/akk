@@ -20,9 +20,9 @@ class Pass
     /** @var  User|null */
     public $user;
 
-    /** @var  \DateTime|null */
+    /** @var  \DateTimeImmutable|null */
     public $obtainDate;
 
-    /** @var  \DateTime|null */
+    /** @var  \DateTimeImmutable|null */
     public $validityStartDate;
 }
