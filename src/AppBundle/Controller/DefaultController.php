@@ -14,21 +14,18 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Router;
 
 class DefaultController extends Controller
 {
     /**
      * @Route("/", name="homepage")
-     * @param Request $request
-     * @param Connection $connection
      * @param PassTypeRepository $passTypeRepository
      * @return Response
      */
-    public function indexAction(Request $request, Connection $connection, PassTypeRepository $passTypeRepository)
+    public function indexAction(PassTypeRepository $passTypeRepository)
     {
-        // replace this example code with whatever you need
-        //$userRepo = $this->get('akk_model.repository.user');
         return $this->render('default/index.html.twig', [
             'base_dir' => realpath($this->getParameter('kernel.project_dir')).DIRECTORY_SEPARATOR,
             'thing' => $passTypeRepository->findAll()
@@ -59,7 +56,33 @@ class DefaultController extends Controller
 
         $this->get('session')->set('user', $user);
 
+        $this->get('session')->getFlashBag()->set('success', 'Successfully logged in.');
+
         return new RedirectResponse($router->generate('homepage'));
+    }
+
+    /**
+     * @Route("/login", name="login_page", methods={"GET"})
+     * @param Router $router
+     * @return Response
+     */
+    public function loginPageAction(Router $router)
+    {
+        return $this->render('default/login_page.html.twig', [
+            'action' => $router->generate('login')
+        ]);
+    }
+
+    /**
+     * @Route("/reg", name="reg_page", methods={"GET"})
+     * @param Router $router
+     * @return Response
+     */
+    public function regPageAction(Router $router)
+    {
+        return $this->render('default/reg_page.html.twig', [
+            'action' => $router->generate('reg')
+        ]);
     }
 
     /**
@@ -72,7 +95,7 @@ class DefaultController extends Controller
      */
     public function regAction(Request $request, UserRepository $userRepository, Router $router)
     {
-        $requiredFields = ['username', 'password', 'firstName', 'lastName', 'email'];
+        $requiredFields = ['username', 'password', 'first_name', 'last_name', 'email'];
         foreach ($requiredFields as $requiredField) {
             if(!$request->request->has($requiredField)) {
                 throw new \Exception("Field '$requiredField' is required.");
@@ -86,6 +109,7 @@ class DefaultController extends Controller
         }
 
         $user = new User();
+        $user->id = null;
         $user->username = $fieldVals['username'];
         $user->password = $fieldVals['password'];
         $user->email = $fieldVals['email'];
@@ -94,6 +118,7 @@ class DefaultController extends Controller
         $userRepository->persist($user);
 
         $this->get('session')->set('user', $user);
+        $this->get('session')->getFlashBag()->set('success', 'Successfully registered.');
 
         return new RedirectResponse($router->generate('homepage'));
     }
@@ -128,6 +153,50 @@ class DefaultController extends Controller
         $pass->obtainDate = new \DateTimeImmutable();
         $pass->validityStartDate = $validityStartDate;
 
-        return new Response('success.');
+        $passRepository->persist($pass);
+
+        if($pass->id !== null) {
+            $this->get('session')->getFlashBag()->set('success', 'Sikeres ' . lcfirst($passType->displayName) . ' vásárlás.');
+        } else {
+            throw new \Exception('Sikertelen bérletvásárlás.');
+        }
+
+        return $this->redirectToRoute('homepage');
+    }
+
+    /**
+     * @Route("/profile/{userId}", name="profile", methods={"GET"})
+     * @param int $userId
+     * @param UserRepository $userRepository
+     * @return Response
+     */
+    public function profileAction($userId, UserRepository $userRepository)
+    {
+        $user = $userRepository->getById($userId);
+
+        return $this->render('default/profile.html.twig', [
+            'user' => $user,
+        ]);
+    }
+
+    /**
+     * @param \Exception $exception
+     * @return Response
+     */
+    public function exceptionAction(\Exception $exception)
+    {
+        return new Response($exception->getMessage());
+    }
+
+    /**
+     * @Route("/logout", name="logout")
+     * @param Session $session
+     * @return RedirectResponse
+     */
+    public function logoutAction(Session $session)
+    {
+        $session->remove('user');
+        $session->getFlashBag()->set('success', 'Sikeres kijelentkezés.');
+        return $this->redirectToRoute('homepage');
     }
 }

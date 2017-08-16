@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <table class="table table-striped">
+        <tbody>
+            <tr>
+                <td>Felhasználónév</td>
+                <td>{{ user.username }}</td>
+            </tr>
+            <tr>
+                <td>Vezetéknév</td>
+                <td>{{ user.lastName }}</td>
+            </tr>
+            <tr>
+                <td>Keresztnév</td>
+                <td>{{ user.firstName }}</td>
+            </tr>
+            <tr>
+                <td>Email cím</td>
+                <td>{{ user.email }}</td>
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block stylesheets %}
+
+{% endblock %}
+

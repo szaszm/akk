@@ -34,9 +34,8 @@ class UserRepository
      */
     private function objectToArray(User $user): array
     {
-        $result = [
-            'id' => $user->id
-        ];
+        $result = [];
+        if($user->id !== null) $result['id'] = $user->id;
         if($user->username !== null) $result['username'] = $user->username;
         if($user->password !== null) $result['password'] = $user->password;
         if($user->email !== null) $result['email'] = $user->email;
@@ -53,7 +52,7 @@ class UserRepository
     private function arrayToObject(array $row): User
     {
         $user = new User();
-        $user->id = $row['id'];
+        if(array_key_exists('id', $row)) $user->id = $row['id'];
         if(array_key_exists('username', $row)) $user->username = $row['username'];
         if(array_key_exists('password', $row)) $user->password = $row['password'];
         if(array_key_exists('email', $row)) $user->email = $row['email'];
@@ -69,7 +68,7 @@ class UserRepository
      */
     public function getById(int $id): User
     {
-        return $this->arrayToObject($this->repoImpl->findById(self::TABLE_NAME, $id));
+        return $this->findOne(['id' => $id]);
     }
 
     /**
@@ -118,10 +117,17 @@ class UserRepository
 
     public function find(array $constraints): array
     {
-        return $this->repoImpl->select(self::TABLE_NAME, $constraints);
+        return array_map(function($row) {
+            return $this->arrayToObject($row);
+        }, $this->repoImpl->select(self::TABLE_NAME, $constraints));
     }
 
-    public function findOne(array $constraints): User
+    /**
+     * @param array $constraints
+     * @return User|null
+     * @throws \Exception
+     */
+    public function findOne(array $constraints)
     {
         $result = $this->find($constraints);
         if(count($result) > 1) {

@@ -1,0 +1,68 @@
+@import "~bootstrap-sass/assets/stylesheets/bootstrap";
+
+.form-row {
+  margin: 15px 0;
+  position: relative;
+
+  input {
+    width: 100%;
+  }
+
+  input[type="text"], input[type="password"], input[type="email"] {
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+
+    font-size: 14px;
+    width: 100%;
+  }
+
+  input[type="email"]:visited:not(:valid) {
+    background-color: red;
+  }
+
+  input[type="submit"] {
+    padding: 20px;
+    background-color: cornflowerblue;
+    border-radius: 5px;
+    border: none;
+    font-weight: bold;
+    color: white;
+  }
+
+  // innentol a blokk vegeig stackoverflowrol loptam
+  // https://stackoverflow.com/questions/35942247/how-to-move-placeholder-to-top-on-focus-and-while-typing
+  input[type="text"]:focus ~ .floating-label,
+  input[type="password"]:focus ~ .floating-label,
+  input[type="email"]:focus ~ .floating-label,
+  input[type="text"]:not(:empty) ~ .floating-label,
+  input[type="password"]:not(:empty) ~ .floating-label,
+  input[type="email"]:not(:empty) ~ .floating-label,
+  input[type="text"]:valid ~ .floating-label,
+  input[type="password"]:valid ~ .floating-label,
+  input[type="email"]:valid ~ .floating-label
+  {
+    top: 6px;
+    bottom: 10px;
+    left: 15px;
+    font-size: 10px;
+    opacity: 1;
+  }
+
+  .floating-label {
+    position: absolute;
+    pointer-events: none;
+    left: 20px;
+    top: 18px;
+    transition: 0.2s ease all;
+    color: #888;
+  }
+}
+
+.vspace {
+  margin-top: 10px;
+  margin-bottom: 25px;
+}
+
+
+

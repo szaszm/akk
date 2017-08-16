@@ -1,0 +1,21 @@
+{% set _navbar_local_route = app.request.attributes.get('_route') %}
+<nav class="navbar">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="{{ path('homepage') }}">AKK</a>
+        </div>
+        <ul class="nav navbar-nav">
+            {% if app.session.get('user') is not null %}
+            <li {% if _navbar_local_route == 'profile' %}class="active"{% endif %}><a href="{{ path('profile', { userId: app.session.get('user').id }) }}">Profilom</a></li>
+            {% endif %}
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            {% if app.session.get('user') is not null %}
+                <li><a href="{{ path('logout') }}">Kijelentkezés</a></li>
+            {% else %}
+                <li {% if _navbar_local_route == 'login_page' %}class="active"{% endif %}><a href="{{ path('login_page') }}">Bejelentkezés</a></li>
+                <li {% if _navbar_local_route == 'reg_page' %}class="active"{% endif %}><a href="{{ path('reg_page') }}">Regisztráció</a></li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>

@@ -1,0 +1,19 @@
+<section class="flashes">
+    {% for label, messages in app.flashes %}
+        {% if label == 'error' %}
+            {% for err in messages %}
+                <div class="alert alert-danger">{{ err }}</div>
+            {% endfor %}
+        {% endif %}
+        {% if label == 'warning' %}
+            {% for warn in messages %}
+                <div class="alert alert-warning">{{ warn }}</div>
+            {% endfor %}
+        {% endif %}
+        {% if label == 'success' %}
+            {% for msg in messages %}
+                <div class="alert alert-success">{{ msg }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endfor %}
+</section>

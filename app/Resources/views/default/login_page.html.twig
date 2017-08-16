@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<form action="{{ action }}" method="post">
+    <h4 class="vspace">Belejentkezés</h4>
+    <div class="form-row">
+        <input type="text" name="username" required />
+        <span class="floating-label">Felhasznalonev</span>
+    </div>
+    <div class="form-row">
+        <input type="password" name="password" required />
+        <span class="floating-label">Jelszo</span>
+    </div>
+    <div class="form-row">
+        <input type="submit" value="Belépés" />
+    </div>
+</form>
+{% endblock %}
+
+{% block stylesheets %}
+
+{% endblock %}
+

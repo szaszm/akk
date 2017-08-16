@@ -122,4 +122,21 @@ class PassTypeRepository
     {
         return $this->repoImpl->select(self::TABLE_NAME);
     }
+
+    public function find(array $constraints): array
+    {
+        return array_map(function($row) {
+            return $this->arrayToObject($row);
+        }, $this->repoImpl->select(self::TABLE_NAME, $constraints));
+    }
+
+    public function findOne(array $constraints): PassType
+    {
+        $result = $this->find($constraints);
+        if(count($result) > 1) {
+            throw new \Exception('Non-unique query result');
+        }
+        if(count($result) == 0) return null;
+        return $result[0];
+    }
 }

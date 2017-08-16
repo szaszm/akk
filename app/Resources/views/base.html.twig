@@ -2,12 +2,20 @@
 <html>
     <head>
         <meta charset="UTF-8" />
-        <title>{% block title %}Welcome!{% endblock %}</title>
+        <title>{% block title %}Alexandriai Közlekedési központ{% endblock %}</title>
         {% block stylesheets %}{% endblock %}
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+        <link rel="stylesheet" href="{{ asset('build/global.css') }}" />
     </head>
     <body>
-        {% block body %}{% endblock %}
+        <div class="container">
+            {% include 'navbar.html.twig' %}
+            {% include 'flash.html.twig' %}
+            {% block body %}{% endblock %}
+        </div>
         {% block javascripts %}{% endblock %}
+        <script type="text/javascript" src="{{ asset('build/app.js') }}"></script>
     </body>
 </html>
