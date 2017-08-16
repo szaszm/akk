@@ -8,6 +8,10 @@
     width: 100%;
   }
 
+  input[type="radio"] {
+    width: initial;
+  }
+
   input[type="text"], input[type="password"], input[type="email"] {
     padding: 20px;
     border: 1px solid #ccc;
@@ -21,14 +25,6 @@
     background-color: red;
   }
 
-  input[type="submit"] {
-    padding: 20px;
-    background-color: cornflowerblue;
-    border-radius: 5px;
-    border: none;
-    font-weight: bold;
-    color: white;
-  }
 
   // innentol a blokk vegeig stackoverflowrol loptam
   // https://stackoverflow.com/questions/35942247/how-to-move-placeholder-to-top-on-focus-and-while-typing
@@ -59,10 +55,48 @@
   }
 }
 
+button, input[type="submit"] {
+  padding: 20px;
+  background-color: cornflowerblue;
+  border-radius: 5px;
+  border: none;
+  font-weight: bold;
+  color: white;
+}
+
 .vspace {
   margin-top: 10px;
   margin-bottom: 25px;
 }
 
+.underline {
+  padding: 15px 0 8px 0;
+  border-bottom: 1px solid #aaa;
+  margin-bottom: 25px;
+}
 
+.profile table tr:first-of-type td {
+  border: none;
+}
 
+.eq-flexbox {
+  display: flex;
+
+  & > * {
+    flex: 1;
+  }
+}
+
+.passes .center {
+  display: block;
+  text-align: center;
+}
+
+.passes .bottom-right {
+  text-align: right;
+  align-self: flex-end;
+
+  button {
+    padding: 10px 20px;
+  }
+}

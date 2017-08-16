@@ -6,7 +6,7 @@
         </div>
         <ul class="nav navbar-nav">
             {% if app.session.get('user') is not null %}
-            <li {% if _navbar_local_route == 'profile' %}class="active"{% endif %}><a href="{{ path('profile', { userId: app.session.get('user').id }) }}">Profilom</a></li>
+            <li {% if _navbar_local_route == 'profile' %}class="active"{% endif %}><a href="{{ path('profile', { userId: app.session.get('user').id }) }}">Profil és bérletek</a></li>
             {% endif %}
         </ul>
         <ul class="nav navbar-nav navbar-right">

@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <form action="{{ action }}" method="get" id="buy_pass_form">
+        <h4 class="vspace">Új bérlet vásárlása</h4>
+        <div class="form-row">
+            {#<select name="name">#}
+            {#{% for passType in passTypes %}#}
+            {#<option value="{{ passType.name }}">{{ passType.displayName }} - {{ passType.priceHuf }} HUF</option>#}
+            {#{% endfor %}#}
+            {#</select>#}
+
+            {% for passType in passTypes %}
+                <div>
+                    <label>
+                        <input type="radio" name="name" value="{{ passType.name }}" data-price="{{ passType.priceHuf }}" required>
+                        {{ passType.displayName }}
+                        -
+                        {{ passType.priceHuf }} HUF
+                    </label>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="form-row">
+            <input type="submit" value="Vásárlás" />
+        </div>
+        <input type="hidden" name="price" value="9500" id="buy_pass_form_pass_price" />
+    </form>
+{% endblock %}
+
+{% block stylesheets %}
+
+{% endblock %}
+

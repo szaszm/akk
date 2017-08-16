@@ -27,6 +27,7 @@ class RepositoryImpl
     }
 
     /**
+     * So much SQLi
      * @param string $fromArg
      * @param array $constraints
      * @return array
@@ -58,7 +59,10 @@ class RepositoryImpl
             $sql .= ' WHERE ' . implode(' AND ', $whereargs);
         }
 
-        $queryResult = $this->conn->query($sql);
+        //var_dump($sql);die();
+        $queryResult = $this->conn->prepare($sql);
+        $queryResult->execute();
+        //$queryResult = $this->conn->executeQuery($sql);
 
         $all = $queryResult->fetchAll(\PDO::FETCH_ASSOC);
         return $all;
@@ -69,7 +73,7 @@ class RepositoryImpl
      * @param int $id
      * @return array
      */
-    public function findById(string $from, int $id): array
+    public function findById(string $from, $id): array
     {
         $result = $this->tryFindById($from, $id);
         if($result !== null) {
@@ -88,7 +92,7 @@ class RepositoryImpl
      * @param int $id
      * @return array|null
      */
-    public function tryFindById(string $from, int $id)
+    public function tryFindById(string $from, $id)
     {
         if(isset($this->cache[$from]) && isset($this->cache[$from][$id])) {
             return $this->cache[$from][$id];

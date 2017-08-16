@@ -66,7 +66,7 @@ class UserRepository
      * @param int $id
      * @return User
      */
-    public function getById(int $id): User
+    public function getById($id): User
     {
         return $this->findOne(['id' => $id]);
     }
@@ -75,7 +75,7 @@ class UserRepository
      * @param int $id
      * @return User
      */
-    public function lazyGetById(int $id): User
+    public function lazyGetById($id): User
     {
         $lazyFindResult = $this->repoImpl->tryFindById(self::TABLE_NAME, $id);
         if($lazyFindResult !== null) {

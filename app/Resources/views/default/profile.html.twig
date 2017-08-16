@@ -1,8 +1,11 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <table class="table table-striped">
-        <tbody>
+    <div class="profile">
+
+        <table class="table">
+            <h3 class="underline">Profil</h3>
+            <tbody>
             <tr>
                 <td>Felhasználónév</td>
                 <td>{{ user.username }}</td>
@@ -19,8 +22,49 @@
                 <td>Email cím</td>
                 <td>{{ user.email }}</td>
             </tr>
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="passes">
+        <div class="eq-flexbox underline">
+            <h3>Bérletek</h3>
+            <div class="bottom-right">
+                <a href="{{ path('buy_pass_page') }}">
+                    <button class="new-pass-button">Új bérlet</button>
+                </a>
+            </div>
+        </div>
+
+        {% if passes|length > 0 %}
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Típus</th>
+                    <th>Vásárlás dátuma</th>
+                    <th>Érvényesség kezdete</th>
+                    <th>Érvényesség vége</th>
+                    <th>Kód</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for pass in passes %}
+                    <tr>
+                        <td>{{ pass.id }}</td>
+                        <td>{{ pass.type.displayName }}</td>
+                        <td>{{ pass.obtainDate|date('Y-m-d H:i:s') }}</td>
+                        <td>{{ pass.validityStartDate|date('Y-m-d H:i:s') }}</td>
+                        <td>{{ pass.validityEndDate|date('Y-m-d H:i:s') }}</td>
+                        <td>{{ pass.code }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <em class="center">Nincs még bérlete</em>
+        {% endif %}
+    </div>
 {% endblock %}
 
 {% block stylesheets %}

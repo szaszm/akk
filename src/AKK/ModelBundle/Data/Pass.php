@@ -25,4 +25,21 @@ class Pass
 
     /** @var  \DateTimeImmutable|null */
     public $validityStartDate;
+
+    /**
+     * Probably not secure... :)
+     * @return bool|string
+     */
+    public function getCode()
+    {
+        return substr(md5($this->id), 0, 10);
+    }
+
+    /**
+     * @return \DateTimeImmutable
+     */
+    public function getValidityEndDate()
+    {
+        return $this->validityStartDate->add(new \DateInterval('PT'.$this->type->validitySeconds.'S'));
+    }
 }

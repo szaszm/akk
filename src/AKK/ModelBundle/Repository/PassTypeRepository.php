@@ -45,6 +45,14 @@ class PassTypeRepository
         return $result;
     }
 
+    private function hidrateFromArray(PassType $passType, array $row): void
+    {
+        if(array_key_exists('name', $row)) $passType->name = $row['name'];
+        if(array_key_exists('display_name', $row)) $passType->displayName = $row['display_name'];
+        if(array_key_exists('price_huf', $row)) $passType->priceHuf = $row['price_huf'];
+        if(array_key_exists('validity_seconds', $row)) $passType->validitySeconds = $row['validity_seconds'];
+    }
+
     /**
      * @param array $row
      * @return PassType
@@ -53,11 +61,7 @@ class PassTypeRepository
     {
         $passType = new PassType();
         $passType->id = $row['id'];
-        if(array_key_exists('name', $row)) $passType->name = $row['name'];
-        if(array_key_exists('display_name', $row)) $passType->displayName = $row['display_name'];
-        if(array_key_exists('price_huf', $row)) $passType->priceHuf = $row['price_huf'];
-        if(array_key_exists('validity_seconds', $row)) $passType->validitySeconds = $row['validity_seconds'];
-
+        $this->hidrateFromArray($passType, $row);
         return $passType;
     }
 
@@ -65,7 +69,7 @@ class PassTypeRepository
      * @param int $id
      * @return PassType
      */
-    public function getById(int $id): PassType
+    public function getById($id): PassType
     {
         return $this->arrayToObject($this->repoImpl->findById(self::TABLE_NAME, $id));
     }
@@ -74,7 +78,7 @@ class PassTypeRepository
      * @param int $id
      * @return PassType
      */
-    public function lazyGetById(int $id): PassType
+    public function lazyGetById($id): PassType
     {
         $lazyFindResult = $this->repoImpl->tryFindById(self::TABLE_NAME, $id);
         if($lazyFindResult !== null) {
@@ -118,11 +122,18 @@ class PassTypeRepository
         $this->repoImpl->dropTable(self::TABLE_NAME);
     }
 
+    /**
+     * @return PassType[]
+     */
     public function findAll(): array
     {
-        return $this->repoImpl->select(self::TABLE_NAME);
+        return $this->find([]);
     }
 
+    /**
+     * @param array $constraints
+     * @return PassType[]
+     */
     public function find(array $constraints): array
     {
         return array_map(function($row) {
@@ -130,6 +141,11 @@ class PassTypeRepository
         }, $this->repoImpl->select(self::TABLE_NAME, $constraints));
     }
 
+    /**
+     * @param array $constraints
+     * @return PassType|null
+     * @throws \Exception
+     */
     public function findOne(array $constraints): PassType
     {
         $result = $this->find($constraints);
@@ -138,5 +154,12 @@ class PassTypeRepository
         }
         if(count($result) == 0) return null;
         return $result[0];
+    }
+
+    public function load(PassType $passType): void
+    {
+        if($passType->name !== null) return;
+        $dbres = $this->repoImpl->select(self::TABLE_NAME, ['id' => $passType->id ])[0];
+        $this->hidrateFromArray($passType, $dbres);
     }
 }

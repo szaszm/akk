@@ -10,6 +10,8 @@ namespace AKK\ModelBundle\Repository;
 
 
 use AKK\ModelBundle\Data\Pass;
+use AKK\ModelBundle\Data\PassType;
+use AKK\ModelBundle\Data\User;
 use AKK\ModelBundle\Repository\Detail\RepositoryImpl;
 
 class PassRepository
@@ -44,9 +46,8 @@ class PassRepository
      */
     private function objectToArray(Pass $pass): array
     {
-        $result = [
-            'id' => $pass->id
-        ];
+        $result = [];
+        if($pass->id !== null) { $result['id'] = $pass->id; }
         if($pass->type !== null) $result['pass_type_id'] = $pass->type->id;
         if($pass->user !== null) $result['user_id'] = $pass->user->id;
         if($pass->obtainDate !== null) $result['obtain_date'] = date('Y-m-d H:i:s', $pass->obtainDate->getTimestamp());
@@ -62,7 +63,7 @@ class PassRepository
     private function arrayToObject(array $row): Pass
     {
         $result = new Pass();
-        $result->id = $row['id'];
+        if(array_key_exists('id', $row)) $result->id = $row['id'];
         if(array_key_exists('pass_type_id', $row)) {
             $result->type = $this->passTypeRepository->lazyGetById($row['pass_type_id']);
         }
@@ -83,7 +84,7 @@ class PassRepository
      * @param int $id
      * @return Pass
      */
-    public function getById(int $id): Pass
+    public function getById($id): Pass
     {
         return $this->arrayToObject($this->repoImpl->findById(self::TABLE_NAME, $id));
     }
@@ -92,7 +93,7 @@ class PassRepository
      * @param int $id
      * @return Pass
      */
-    public function lazyGetById(int $id): Pass
+    public function lazyGetById($id): Pass
     {
         $lazyFindResult = $this->repoImpl->tryFindById(self::TABLE_NAME, $id);
         if($lazyFindResult !== null) {
@@ -107,7 +108,7 @@ class PassRepository
      */
     public function persist(Pass $pass): void
     {
-        $this->repoImpl->insert(self::TABLE_NAME, $this->objectToArray($pass));
+        $pass->id = $this->repoImpl->insert(self::TABLE_NAME, $this->objectToArray($pass));
     }
 
     public function initTable()
@@ -130,6 +131,10 @@ class PassRepository
         return $this->repoImpl->select(self::TABLE_NAME);
     }
 
+    /**
+     * @param array $constraints
+     * @return Pass[]
+     */
     public function find(array $constraints): array
     {
         return array_map(function($row) {
@@ -145,5 +150,29 @@ class PassRepository
         }
         if(count($result) == 0) return null;
         return $result[0];
+    }
+
+    /**
+     * @param User $user
+     * @return Pass[]
+     */
+    public function getByUser(User $user): array
+    {
+        return $this->find(['user_id' => $user->id]);
+    }
+
+    /**
+     * @param User $user
+     * @param PassType $passType
+     * @return Pass
+     */
+    public function create(User $user, PassType $passType): Pass
+    {
+        $pass = new Pass();
+        $pass->user = $user;
+        $pass->type = $passType;
+        $pass->obtainDate = new \DateTimeImmutable('now');
+        $pass->validityStartDate = new \DateTimeImmutable('now');
+        return $pass;
     }
 }
